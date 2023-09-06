@@ -1,30 +1,62 @@
 import React, { Component } from 'react';
 import authService from '../../components/api-authorization/AuthorizeService';
+import  { formatDate } from '../../utils/DateFunction'
+import {  validateField, validateForm, errorClass, validateFields } from '../../utils/ValidationEmployee';
 
 
 export class EmployeeEdit extends Component {
   static displayName = EmployeeEdit.name;
+  
 
   constructor(props) {
     super(props);
-    this.state = { id: 0,fullName: '',birthdate: '',tin: '',typeId: 1, loading: true,loadingSave:false
+    this.state = { id: 0,fullname: '',birthdate: '',tin: '',typeId: 1, loading: true,loadingSave:false,
+    formValid : false, 
+    fullnameValid:false,
+    birthdateValid: false,
+    typeIdValid: false,
+    tinValid : false,
+    formErrors :{
+      fullname: '',
+      birthdate:'',
+      tin: '',
+      typeId: ''
+
+    }
+
    };
+
+   
   }
 
   componentDidMount() {
     this.getEmployee(this.props.match.params.id);
   }
+
   handleChange(event) {
     const name = event.target.name;
     const value = event.target.value;
-    this.setState({ [name] :value})
-  }
+    const me = this;
 
+    this.setState({[name]: value}, 
+      () => {
+        
+        validateField(me, name, value);
+        validateForm(me);
+      
+      });
+    
+  }
+ 
   handleSubmit(e){
       e.preventDefault();
-      if (window.confirm("Are you sure you want to save?")) {
-        this.saveEmployee();
-      } 
+      validateFields(this);
+      if(this.state.formValid)
+      {
+        if (window.confirm("Are you sure you want to save?")) {
+          this.saveEmployee();
+        } 
+      }
   }
 
   render() {
@@ -36,26 +68,30 @@ export class EmployeeEdit extends Component {
 
 <div className='form-row'>
 <div className='form-group col-md-6'>
-  <label htmlFor='inputFullName4'>Full Name: *</label>
-  <input type='text' className='form-control' id='inputFullName4' onChange={this.handleChange.bind(this)} name="fullName" value={this.state.fullName} placeholder='Full Name' />
+  <label htmlFor='inputfullname4'>Full Name: *</label>
+  <input type='text' className={`form-control ${errorClass(this.state.formErrors.fullname)}`} id='inputfullname4' onChange={this.handleChange.bind(this)} name="fullname" value={this.state.fullname} placeholder='Full Name' />
+  <span className='label-error'>{this.state.formErrors.fullname}</span>
 </div>
 <div className='form-group col-md-6'>
   <label htmlFor='inputBirthdate4'>Birthdate: *</label>
-  <input type='date' className='form-control' id='inputBirthdate4' onChange={this.handleChange.bind(this)} name="birthdate" value={this.state.birthdate} placeholder='Birthdate' />
+  <input type='date'  className={`form-control ${errorClass(this.state.formErrors.birthdate)}`} id='inputBirthdate4' onChange={this.handleChange.bind(this)} name="birthdate" value={this.state.birthdate} placeholder='Birthdate' />
+  <span className='label-error'>{this.state.formErrors.birthdate}</span>
 </div>
 </div>
 <div className="form-row">
 <div className='form-group col-md-6'>
   <label htmlFor='inputTin4'>TIN: *</label>
-  <input type='text' className={`form-control ${this.errorClass(this.state.formErrors.tin)}`}  id='inputTin4' onChange={this.handleChange.bind(this)} value={this.state.tin} name="tin" placeholder='TIN' />
+  <input type='text'  className={`form-control ${errorClass(this.state.formErrors.tin)}`} id='inputTin4' onChange={this.handleChange.bind(this)} value={this.state.tin} name="tin" placeholder='TIN' />
+  <span className='label-error'>{this.state.formErrors.tin}</span>
 </div>
 <div className='form-group col-md-6'>
   <label htmlFor='inputEmployeeType4'>Employee Type: *</label>
   <select id='inputEmployeeType4' onChange={this.handleChange.bind(this)} value={this.state.typeId}  
-  name="typeId" className={`form-control ${this.errorClass(this.state.formErrors.type)}`} >
+  name="typeId" className={`form-control ${errorClass(this.state.formErrors.typeId)}`} >
     <option value='1'>Regular</option>
     <option value='2'>Contractual</option>
   </select>
+  <span className='label-error'>{this.state.formErrors.typeId}</span>
 </div>
 </div>
 <button type="submit" onClick={this.handleSubmit.bind(this)} disabled={this.state.loadingSave} className="btn btn-primary mr-2">{this.state.loadingSave?"Loading...": "Save"}</button>
@@ -100,6 +136,11 @@ export class EmployeeEdit extends Component {
       headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
     });
     const data = await response.json();
-    this.setState({ id: data.id,fullName: data.fullName,birthdate: data.birthdate,tin: data.tin,typeId: data.typeId, loading: false,loadingSave: false });
+    this.setState({ id: data.id,
+      fullname: data.fullName,
+      birthdate:  formatDate(data.birthdate),
+      tin: data.tin,
+      typeId: data.typeId, loading: false,
+      loadingSave: false });
   }
 }

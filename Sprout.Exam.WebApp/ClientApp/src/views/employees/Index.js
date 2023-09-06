@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import authService from '../../components/api-authorization/AuthorizeService';
+import { formatDate } from '../../utils/DateFunction'
 
 export class EmployeesIndex extends Component {
   static displayName = EmployeesIndex.name;
@@ -29,7 +30,7 @@ export class EmployeesIndex extends Component {
           {employees.map(employee =>
             <tr key={employee.id}>
               <td>{employee.fullName}</td>
-              <td>{employee.birthdate}</td>
+              <td>{formatDate(employee.birthdate)}</td>
               <td>{employee.tin}</td>
               <td>{employee.typeId === 1?"Regular":"Contractual"}</td>
               <td>
