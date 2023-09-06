@@ -5,5 +5,6 @@ Thing to add for production
 4. Employee Type also could be a part of config maintenance table.
 5. There should be a table for recording the computed salary. An option to record with corresponding month should be available.
 6. Admin / Employee roles should be added. Employee for viewing and Admin for editing.
+7. Improve aesthetics. Alert prompts and the overall look of the grid.
  
 
