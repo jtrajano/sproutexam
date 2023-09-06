@@ -5,7 +5,6 @@
 export function validateField(obj, fieldName, value)
 {
 
-    debugger;
   let state = obj.state;
  
   
@@ -49,14 +48,10 @@ export function validateField(obj, fieldName, value)
 }
 
 export function validateForm (obj){
-
-    debugger;
     let state =obj.state;
     state.formValid = obj.state.fullnameValid && obj.state.birthdateValid && obj.state.tinValid && obj.state.typeIdValid;
-    //this.setState(state);
     return state;
-
-  }
+}
 
 export function errorClass(error) {
 
@@ -65,7 +60,6 @@ export function errorClass(error) {
 
 export function validateFields(obj)
 {
-  debugger;
   validateField(obj, 'fullname', obj.state.fullname || '');
   validateField(obj,'birthdate', obj.state.birthdate || '');
   validateField(obj,'tin', obj.state.tin || '');

@@ -15,6 +15,7 @@ export class EmployeesIndex extends Component {
   }
 
   static renderEmployeesTable(employees,parent) {
+
     return (
       <table className='table table-striped' aria-labelledby="tabelLabel">
         <thead>
@@ -49,6 +50,7 @@ export class EmployeesIndex extends Component {
   }
 
   render() {
+    debugger;
     let contents = this.state.loading
       ? <p><em>Loading...</em></p>
       : EmployeesIndex.renderEmployeesTable(this.state.employees,this);
