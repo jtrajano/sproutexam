@@ -1,0 +1,12 @@
+.vs/
+Sprout.Exam.Business/bin/
+Sprout.Exam.Common/bin/
+Sprout.Exam.DataAccess/bin/
+Sprout.Exam.Models/bin/
+Sprout.Exam.WebApp/bin/
+
+Sprout.Exam.Business/obj/
+Sprout.Exam.Common/obj/
+Sprout.Exam.DataAccess/obj/
+Sprout.Exam.Models/obj/
+Sprout.Exam.WebApp/obj/
