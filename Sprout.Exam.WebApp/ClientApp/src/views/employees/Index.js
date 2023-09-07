@@ -16,6 +16,7 @@ export class EmployeesIndex extends Component {
 
   static renderEmployeesTable(employees,parent) {
 
+    if(!employees.map) return(<div></div>)
     return (
       <table className='table table-striped' aria-labelledby="tabelLabel">
         <thead>
@@ -28,7 +29,10 @@ export class EmployeesIndex extends Component {
           </tr>
         </thead>
         <tbody>
-          {employees.map(employee =>
+        
+          { 
+          
+          employees.map(employee =>
             <tr key={employee.id}>
               <td>{employee.fullName}</td>
               <td>{formatDate(employee.birthdate)}</td>
