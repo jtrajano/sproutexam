@@ -10,3 +10,6 @@ Sprout.Exam.Common/obj/
 Sprout.Exam.DataAccess/obj/
 Sprout.Exam.Models/obj/
 Sprout.Exam.WebApp/obj/
+
+Sprout.Exam.Test/bin/Debug/
+Sprout.Exam.Test/obj/
