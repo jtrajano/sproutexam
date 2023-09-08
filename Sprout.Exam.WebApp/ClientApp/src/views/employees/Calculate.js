@@ -1,24 +1,69 @@
 import React, { Component } from 'react';
 import authService from '../../components/api-authorization/AuthorizeService';
+import { errorClass } from '../../utils/ValidationEmployee';
+
+
 
 export class EmployeeCalculate extends Component {
   static displayName = EmployeeCalculate.name;
 
+
+
   constructor(props) {
     super(props);
-    this.state = { id: 0,fullName: '',birthdate: '',tin: '',typeId: 1,absentDays: 0,workedDays: 0,netIncome: 0, loading: true,loadingCalculate:false };
+    this.state = { id: 0,fullName: '',birthdate: '',tin: '',typeId: 1,absentDays: 0,workedDays: 0,netIncome: 0,
+    loading: true,loadingCalculate:false, AbsentDayError: '', WorkDayError: '' 
+    
+    };
+
+
   }
 
   componentDidMount() {
     this.getEmployee(this.props.match.params.id);
   }
   handleChange(event) {
-    this.setState({ [event.target.name] : event.target.value});
+    this.setState({ [event.target.name] : event.target.value},()=>{
+      this.validateForm(event.target)
+
+    });
+
   }
 
+  validateForm({name, value}) {
+   
+    this.setState({netIncome : 0});
+ 
+    
+    switch (name) {
+      case 'absentDays':
+        this.setState({WorkDayError:''});
+        this.setState({AbsentDayError:((!value || isNaN(value))   ? 'Numeric value is required!' : '' ) })
+  
+   
+
+        
+      case 'workedDays':
+        this.setState({AbsentDayError:''});
+        this.setState({WorkDayError:((!value || isNaN(value))   ? 'Numeric value is required!'  : '' ) })
+     
+    
+      default:
+        break;
+    }
+  
+
+    
+  }
   handleSubmit(e){
       e.preventDefault();
-      this.calculateSalary();
+      if(this.state.typeId ===1)
+        this.validateForm({name:'absentDays', value:this.state.absentDays})
+      else
+        this.validateForm({name:'workedDays', value:this.state.workedDays})
+
+      if (!this.state.WorkDayError && !this.state.AbsentDayError)
+        this.calculateSalary();
   }
 
   render() {
@@ -65,11 +110,18 @@ export class EmployeeCalculate extends Component {
 { this.state.typeId === 1? 
 <div className='form-group col-md-6'>
   <label htmlFor='inputAbsentDays4'>Absent Days: </label>
-  <input type='text' className='form-control' id='inputAbsentDays4' onChange={this.handleChange.bind(this)} value={this.state.absentDays} name="absentDays" placeholder='Absent Days' />
+  <input type='text'   className={`form-control ${errorClass(this.state.AbsentDayError)}`}
+  id='inputAbsentDays4' onChange={this.handleChange.bind(this)} value={this.state.absentDays} 
+  name="absentDays" placeholder='Absent Days' />
+  <span className='label-error'>{this.state.AbsentDayError}</span>
 </div> :
 <div className='form-group col-md-6'>
   <label htmlFor='inputWorkDays4'>Worked Days: </label>
-  <input type='text' className='form-control' id='inputWorkDays4' onChange={this.handleChange.bind(this)} value={this.state.workedDays} name="workedDays" placeholder='Worked Days' />
+  <input type='text' id='inputWorkDays4' 
+  className={`form-control ${errorClass(this.state.WorkDayError)}`}
+  onChange={this.handleChange.bind(this)} value={this.state.workedDays} 
+  name="workedDays" placeholder='Worked Days' />
+  <span className='label-error'>{this.state.WorkDayError} </span>
 </div>
 }
 </div>
@@ -117,7 +169,12 @@ export class EmployeeCalculate extends Component {
 
     if(response.status === 200){
         const data = await response.json();
-        this.setState({ id: data.id,fullName: data.fullName,birthdate: data.birthdate,tin: data.tin,typeId: data.typeId, loading: false,loadingCalculate: false });
+        this.setState({ 
+          id: data.id,fullName: data.fullName,birthdate: data.birthdate,
+          tin: data.tin,typeId: data.typeId, loading: false,
+          loadingCalculate: false,
+          AbsentDayError: '', 
+          WorkDayError: '' });
     }
     else{
         alert("There was an error occured.");
